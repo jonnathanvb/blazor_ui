@@ -1,0 +1,64 @@
+﻿
+@typeparam T
+
+<table class="table table-hover table-bordered ">
+    <thead class="table-dark">
+        <tr>
+            @foreach (var item in properties)
+            {
+                <th scope="col">@item.Name</th>
+            }
+            <th>Eventos</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in List)
+        {
+            <tr>
+                @foreach(var prop in properties)
+                {
+                    <td>@prop.GetValue(item)</td>
+                }
+                <td><button class="btn btn-warning" @onclick="() => edit(item)" >Editar</button></td>
+            </tr>
+        }
+    </tbody>
+
+   @rodape
+    
+</table>
+
+
+@code {
+    [Parameter]
+    public List<T> List { get; set; } = new List<T>();
+
+    [Parameter]
+    public RenderFragment rodape { get; set; }
+
+    private PropertyInfo[] properties;
+
+    [Parameter]
+    public EventCallback<object> EditCallback { get; set; }
+
+
+    public async void edit(T value)
+    {
+        if ( EditCallback.HasDelegate)
+        {
+            await EditCallback.InvokeAsync(value);
+        }
+
+    }
+
+    protected override Task OnParametersSetAsync()
+    {
+        properties = typeof(T).GetProperties();
+        return base.OnInitializedAsync();
+    }
+
+
+
+}
