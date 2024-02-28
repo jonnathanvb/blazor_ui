@@ -1,0 +1,39 @@
+﻿@page "/produto"
+
+<h3> teste</h3>
+<EditForm Model="Command">
+<div class="container">
+    <div class="row">
+      
+        <div class="col-md-6 align-items-center">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Nome</span>
+                    <InputText class="form-control" placeholder="Coca-cola" @bind-Value="Command.Nome"></InputText>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Quantidade em Estoque</span>
+                    <InputNumber id="valor" class="form-control" placeholder="20.0000" @bind-Value="Command.QuantidadeEmEstoque"></InputNumber>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="">Valor</span>
+                    <InputNumber id="valor" class="form-control" placeholder="20.00" @bind-Value="Command.Valor"></InputNumber>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="" >Descrição</span>
+                    <InputTextArea class="form-control" placeholder="É um refrigerante em lata" @bind-Value="Command.Descricao"></InputTextArea>
+                </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+</EditForm>
+
+
+

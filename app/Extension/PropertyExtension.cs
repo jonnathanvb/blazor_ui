@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using app.Attributes;
+using app.Services.Dto;
+using System.Reflection;
 
 namespace app.Extension
 {
@@ -12,7 +14,22 @@ namespace app.Extension
         }
 
        
+        public static string GetColumnName(this PropertyInfo value)
+        {
+            var attribute = value.GetAttribute<TableColumnAttribute>();
+            if (attribute == null) return value.Name;
 
-       
+            return attribute.NameColumn;
+        }
+
+        public static bool IsVisible(this PropertyInfo value)
+        {
+            var attribute = value.GetAttribute<TableColumnAttribute>();
+            if (attribute == null) return true;
+
+            return attribute.IsVisible;
+        }
+
+
     }
 }

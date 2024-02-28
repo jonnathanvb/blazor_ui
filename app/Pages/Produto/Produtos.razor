@@ -1,0 +1,42 @@
+﻿@page "/produtos"
+@using app.Services
+
+
+<h3>Produtos</h3>
+
+<div class="container text-center">
+    <button class="btn btn-primary mb-5 teste" @onclick="Create" >Cadastrar</button>
+    <DataTableComponent List="@ListProduto" EditCallback="Alterar">
+    </DataTableComponent>
+</div>
+
+
+
+@inject ProdutoServices produtoServices;
+@inject NavigationManager navigation;
+@code {
+    private List<ProdutoDto> ListProduto { get; set; } = new List<ProdutoDto>();
+
+    private List<PedidoDto> ListPedido { get; set; } = new List<PedidoDto>();
+
+    private ProdutoDto produto { get; set; } = new ProdutoDto();
+
+    public void Alterar(object dto)
+    {
+        produto = dto as ProdutoDto;
+
+    }
+
+    public void Create()
+    {
+        navigation.NavigateTo("/produto");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var list = await produtoServices.GetAll();
+        ListProduto = list.ToList();
+        await base.OnInitializedAsync();
+    }
+
+}

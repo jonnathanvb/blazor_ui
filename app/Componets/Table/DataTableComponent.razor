@@ -6,7 +6,12 @@
         <tr>
             @foreach (var item in properties)
             {
-                <th scope="col">@item.Name</th>
+                
+                @if (@item.IsVisible())
+                {
+                    <th scope="col"> @item.GetColumnName()</th>
+                }
+                
             }
             <th>Eventos</th>
 
@@ -19,7 +24,10 @@
             <tr>
                 @foreach(var prop in properties)
                 {
+                    @if (@prop.IsVisible())
+                    {
                     <td>@prop.GetValue(item)</td>
+                    }
                 }
                 <td><button class="btn btn-warning" @onclick="() => edit(item)" >Editar</button></td>
             </tr>
