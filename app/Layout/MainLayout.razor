@@ -17,12 +17,10 @@
 </div>
 
 @code {
-    [Inject]
-    public LoginServices loginServices { get; set; }
+    
 
     protected override async Task OnInitializedAsync()
     {
-        var user = new LoginCommand();
-        var teste = loginServices.Autenticar(user);
+        
     }
 }

@@ -1,13 +1,77 @@
 ﻿@page "/"
+@using Bogus
+@using app.Services.Dto.Chart
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="container">
+    <div id="chart"> </div>
+</div>
 
-
+@inject IJSRuntime JsRuntime
+@inject ProdutoServices produtoServices
 @code {
 
-    
+    [Inject]
+    public LoginServices loginServices { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var user = new LoginCommand();
+        var teste = await loginServices.Autenticar(user);
+        var pedidos = await produtoServices.GetAllPedido();
+
+        // var seriesFake = new Faker<Series>()
+        // .RuleFor(x => x.data, x => x.Random.ArrayElements([1, 20, 35, 49, 88, 76, 33, 28, 19, 10], 10).ToList())
+        // .RuleFor(x => x.name, x => "Sales");
+
+        // var chartFake = new Faker<Chart>()
+        // .RuleFor(x => x.type, "bar");
+
+        // var xaxisFake = new Faker<Xaxis>().RuleFor(x => x.categories, x => new List<int>() { 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000 });
+
+        // var fake = new Faker<Graph>()
+        // .RuleFor(x => x.series, seriesFake.Generate(1))
+        // .RuleFor(x => x.chart, chartFake.Generate())
+        // .RuleFor(x => x.xaxis, xaxisFake.Generate());
+
+        // var graph = fake.Generate();
+        var datas = new List<Data>();
+        foreach (var item in pedidos)
+        {
+            var dt = new Data
+                {
+                    Name = item.Nome,
+                    Valor = item.Total
+                };
+            datas.Add(dt);
+            
+        }
+
+        var graph = new Graph()
+            {
+                chart = new Chart { type = "bar" },
+                PlotOptions = new PlotOptions() { Bar = new Bar() { Horizontal = false } },
+                series = new List<Series>()
+                {
+                    new Series ()
+                    {
+                        Data = datas
+                    }
+                }
+            };
+
+        await JsRuntime.InvokeVoidAsync("base.graph", "chart", graph);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await base.OnInitializedAsync();
+    }
+
 }

@@ -11,7 +11,7 @@ namespace app.Services.Dto
 
         public string Nome { get; set; } = string.Empty;
 
-        [TableColumn("Valor de Venda", false)]
+        [TableColumn("Valor de Venda")]
         public decimal Valor { get; set; }
 
     }

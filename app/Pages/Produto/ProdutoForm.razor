@@ -1,0 +1,125 @@
+﻿@page "/produto"
+@page "/produto/{Id:int}"
+
+<h3>Produto</h3>
+
+<div class="container">
+    
+   
+    <EditForm EditContext="ctx"   OnSubmit="Cadastrar">
+        <DataAnnotationsValidator />
+       
+        <div class="row justify-content-center">
+            
+            <div class="col-6">
+
+                <div class="col-12">
+                    <div class="input-group">
+                        <label class="input-group-text" for="Nome">Nome</label>
+                        <InputText id="Nome" class="form-control" placeholder="Nome" @onblur="Valid" @bind-Value="Command.Nome" />                     
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <ValidationMessage For="() => Command.Nome" />
+                </div>
+                <div class="col-12"></div>
+
+
+                <div class="col-12">
+                    <div class="input-group">
+                        <div class="input-group-text">Quantidade em Estoque</div>
+                        <InputNumber id="QuantidadeEmEstoque" class="form-control" @onblur="Valid" placeholder="Quantidade em Estoque" @bind-Value="Command.QuantidadeEmEstoque" />
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <ValidationMessage For="() => Command.QuantidadeEmEstoque" />
+                </div>
+
+                <div class="col-12 ">
+                    <div class="input-group">
+                        <div class="input-group-text">Valor</div>
+                        <InputNumber id="Valor" class="form-control" @onblur="Valid" placeholder="Valor" @bind-Value="Command.Valor" />
+                    </div>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <ValidationMessage For="() => Command.Valor" />
+                </div>
+
+                <div class="col-12 mb-3">
+                    <div class="input-group">
+                        <div class="input-group-text">Descrição</div>
+                        <InputTextArea id="Descricao" class="form-control" @onblur="Valid" placeholder="Descrição do Produto" @bind-Value="Command.Descricao" />
+                    </div>
+
+
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-warning me-2" @onclick="VoltarAsync">Voltar</button>
+                    <button type="submit" class="btn btn-primary p-1"> @(Id == 0 ? "Cadastrar" : "Atualizar") </button>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+
+    </EditForm>
+</div>
+
+@inject IJSRuntime JsRuntime
+@inject ProdutoServices produtoService
+@inject NavigationManager Navigation
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EditContext ctx;
+
+    public ProdutoCommand Command { get; set; } = new ProdutoCommand();
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (Id != 0)
+        {
+            Command = await produtoService.Get(Id);
+        }
+        ctx = new EditContext(Command);
+
+        await base.OnInitializedAsync();
+    }
+
+    public void Valid()
+    {
+        ctx.Validate();
+    }
+
+
+    public async Task Cadastrar()
+    {
+        if (ctx.Validate())
+        {
+            if (Id == 0)
+            {
+                var result = await produtoService.Post(Command);
+                if (result) Navigation.NavigateTo("Produtos");
+            }
+            else
+            {
+                var result = await produtoService.Put(Command);
+                if (result) Navigation.NavigateTo("Produtos");
+            }
+        }
+    }
+
+    public async Task VoltarAsync()
+    {
+        await JsRuntime.InvokeVoidAsync("base.goBack");
+    }
+}
